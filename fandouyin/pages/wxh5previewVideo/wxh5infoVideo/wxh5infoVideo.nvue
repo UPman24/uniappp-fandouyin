@@ -32,7 +32,9 @@
 		 
 		 
 		 -->
-		<image v-if="isShowAixin" src="@/static/img/index/aixining.png" :style="'position: fixed; margin-left: '+ aixinLeft +'px; margin-top: '+ aixinTop +'px; width: 70px; height: 65px; transform: rotate('+ Rotate +'deg);'"></image>
+		 <view @click="autoPlay" style="position: fixed; margin-top: 100upx; right: 40upx;">
+		 	<text style="padding: 10upx; padding-left: 40upx; padding-right: 40upx; border-radius: 20upx; background-color: #F8F8F8; color: #007AFF; font-weight: bold; font-size: 14px;">{{autoplayText}}</text>
+		 </view>
 		<swiper :style="'width: '+ windowWidth +'px; height: '+ windowHeight +'px; background-color: #000000;'" :vertical="true" @animationfinish="animationfinish" @change="change" :current="current" :indicator-dots="false">
 			<swiper-item v-for="(list,index) in dataList">
 				<view>
@@ -42,10 +44,28 @@
 					3.http-cache默认开启视频缓存
 					4.poster（封面（方案一））：这里的封面默认处理存储在阿里云的视频
 					5.show-loading：这里默认去掉播放转圈的标志
-					v-if="Math.abs(k-index)<=1"
+					
 					 -->
+					 <video
+					 v-if="isChange"
+					 :id="list._id+'_'+index"
+					 :loop="true"
+					 :muted="list.isplay"
+					 :controls="false"
+					 :http-cache="true"
+					 :page-gesture="false"
+					 :show-fullscreen-btn="false"
+					 :show-loading="false"
+					 :show-center-play-btn="false"
+					 :enable-progress-gesture="false"
+					 :src="list.src"
+					 @ended="ended"
+					 @click="tapVideoHover(list.state,$event)"
+					 :style="'width: '+ windowWidth +'px; height: '+ windowHeight +'px; background-color: #000000;'"
+					 :poster="list.src+'?x-oss-process=video/snapshot,t_100,f_jpg'"
+					 ></video>
 					<video
-					v-if="Math.abs(k-index)<=1"
+					v-if="Math.abs(k-index)<=1&&!isChange"
 					:id="list._id+''+index"
 					:loop="true"
 					:muted="list.isplay"
@@ -74,7 +94,7 @@
 					></image>
 				</view>
 				<!-- 播放状态：pause 的时候就会暂停 -->
-				<view class="videoHover" @click="tapVideoHover(list.state,$event)" @touchstart="touchstartHover" :style="'width: '+ windowWidth +'px; height: '+ windowHeight +'px;'">
+				<view class="videoHover" @click="tapVideoHover(list.state,$event)" :style="'width: '+ windowWidth +'px; height: '+ windowHeight +'px;'">
 					<image v-if="list.state=='pause'" class="playState" src="@/static/img/index/play.png"></image>
 				</view>
 				<view class="userInfo">
@@ -127,12 +147,10 @@
 					'width': 0,
 				},
 				
-				// 双击点赞参数
-				touchNum: 0,
-				aixinLeft: 0,
-				aixinTop: 0,
-				isShowAixin: false,
-				Rotate: 0
+				isAutoplay: false,//是否开启自动播放(默认不开启)
+				autoplayText: "开启自动播放",
+				thisindex: 0,
+				isChange: true,
 			}
 		},
 		watch:{
@@ -141,11 +159,11 @@
 				this.dataList[old_k].playIng = false//如果视频暂停，就加载封面
 				this.dataList[old_k].isplay = true
 				this.dataList[old_k].state = 'pause'
-				// uni.createVideoContext(this.dataList[old_k]._id+''+old_k,this).seek(0)
-				// uni.createVideoContext(this.dataList[old_k]._id+''+old_k,this).pause()
+				uni.createVideoContext(this.dataList[old_k]._id+''+old_k,this).seek(0)
+				uni.createVideoContext(this.dataList[old_k]._id+''+old_k,this).pause()
 				console.log('预留第' + (old_k + 1) + '个视频：' + this.dataList[old_k]._id+''+old_k)
 				// 2.0版本已经去掉了下面这一句，视频不用暂停，只需要把声音禁止就行
-				uni.createVideoContext(this.dataList[old_k]._id + '' + old_k,this).stop()//如果视频暂停，那么旧视频停止，这里的this.dataList[old_k]._id + '' + old_k，后面加 old_k 是为了每一个视频的 id 值不同，这样就可以大程度的避免串音问题
+				// uni.createVideoContext(this.dataList[old_k]._id + '' + old_k,this).stop()//如果视频暂停，那么旧视频停止，这里的this.dataList[old_k]._id + '' + old_k，后面加 old_k 是为了每一个视频的 id 值不同，这样就可以大程度的避免串音问题
 				console.log('已经暂停 --> 第' + (old_k + 1) + '个视频～')//提示
 				this.dataList[k].state = 'play'
 				setTimeout(()=>{
@@ -159,17 +177,18 @@
 				console.log('预加载第' + (p + 1) + '个视频：' + this.dataList[p]._id+''+p)
 			}
 		},
-		onLoad() {
+		onLoad(option) {
 			this.platform = uni.getSystemInfoSync().platform
 			var model = uni.getSystemInfoSync().model
 			if(this.platform == 'ios' && (model !== 'iPhone6' || model !== 'iPhone6s' || model !== 'iPhone7' || model !== 'iPhone8')){
-				this.deleteHeight = 0//有 tabbar的 修改这里可以改变视频高度
+				this.deleteHeight = 50//有 tabbar的 修改这里可以改变视频高度
 			}
 			this.windowWidth = uni.getSystemInfoSync().windowWidth
 			this.windowHeight = uni.getSystemInfoSync().windowHeight
 			this.boxStyle.width = this.windowWidth + 'px'//给宽度加px
 			this.boxStyle.height = this.windowHeight - this.deleteHeight;//有 tabbar的 修改这里可以改变视频高度
-			this.get() //刚进入页面加载数据
+			this.thisindex = Number(option.index)
+			this.get(option) //刚进入页面加载数据
 		},
 		onShow(){
 			console.log('回到前台');
@@ -184,76 +203,44 @@
 			console.log('到后台');
 		},
 		methods: {
+			autoPlay(){
+				this.isAutoplay = !this.isAutoplay;
+				if(!this.isAutoplay){
+					this.autoplayText = "开启自动播放"
+					uni.showToast({
+						title: "关闭自动播放",
+						icon: 'none',
+						duration: 3000
+					})
+				} else {
+					this.autoplayText = "关闭自动播放"
+					uni.showToast({
+						title: "开启自动播放",
+						icon: 'none',
+						duration: 3000
+					})
+				}
+			},
 			ended(){
 				// 1.播放当前视频结束时触发，自动切换下一个视频
-				// this.current = this.k+1
-			},
-			// 双击点赞效果
-			touchstartHover(event){
-				if(this.touchNum >= 1){
-					// console.log('双击 -- X坐标：'+ event.touches[0].screenX);
-					// console.log('双击 -- Y坐标：'+ event.touches[0].screenY);
-					this.aixinLeft = event.touches[0].screenX - 50;
-					this.aixinTop =  event.touches[0].screenY - 50;
-					this.isShowAixin = true;
-					let max = 40; let min = -40;
-					this.Rotate = Math.floor(Math.random() * (max - min + 1)) + min;
-					setTimeout(()=>{
-						this.isShowAixin = false;
-					},700)
+				if(this.isAutoplay){
+					this.current = this.k+1
 				}
 			},
 			//点击播放&&暂停
 			tapVideoHover(state,event){
-				this.dataList[this.k].isShowimage = false
-				this.dataList[this.k].isShowProgressBarTime = false
-				this.ProgressBarOpacity = 0.5
-				this.dotWidth = 0
 				console.log('state--',state);
-				// 1.启用双击点赞 --- start
-				this.touchNum++;
-				setTimeout(()=>{
-					if(this.touchNum == 1){
-						if(state=='play'||state=='continue'){
-							this.dataList[this.k].state = 'pause';
-						}else{
-							this.dataList[this.k].state = 'continue';
-						}
-						if(this.dataList[this.k].state == 'continue'){
-							uni.createVideoContext(this.dataList[this.k]._id+''+this.k,this).play();//暂停以后继续播放
-						}
-						if(this.dataList[this.k].state == 'pause'){
-							uni.createVideoContext(this.dataList[this.k]._id+''+this.k,this).pause();//暂停以后继续播放
-						}
-					}
-					if(this.touchNum >= 2){
-						this.doubleLike();
-					}
-					this.touchNum = 0;
-				},200)
-				// --------------- ending
-				// 2. 不启用双击点赞 start
-				// if(state=='play'||state=='continue'){
-				// 	this.dataList[this.k].state = 'pause';
-				// }else{
-				// 	this.dataList[this.k].state = 'continue';
-				// }
-				// if(this.dataList[this.k].state == 'continue'){
-				// 	uni.createVideoContext(this.dataList[this.k]._id+''+this.k,this).play();//暂停以后继续播放
-				// }
-				// if(this.dataList[this.k].state == 'pause'){
-				// 	uni.createVideoContext(this.dataList[this.k]._id+''+this.k,this).pause();//暂停以后继续播放
-				// }
-				// --------------- ending
-			},
-			doubleLike(){
-				if(this.dataList[this.k].like == false){
-					this.dataList[this.k].like_n += 1;
-					this.dataList[this.k].like = true;
+				if(state=='play'||state=='continue'){
+					this.dataList[this.k].state = 'pause';
+				}else{
+					this.dataList[this.k].state = 'continue';
 				}
-				/*
-				点赞
-				*/
+				if(this.dataList[this.k].state == 'continue'){
+					uni.createVideoContext(this.dataList[this.k]._id+''+this.k,this).play();//暂停以后继续播放
+				}
+				if(this.dataList[this.k].state == 'pause'){
+					uni.createVideoContext(this.dataList[this.k]._id+''+this.k,this).pause();//暂停以后继续播放
+				}
 			},
 			change(event){
 				this.k = event.detail.current
@@ -281,50 +268,39 @@
 					}
 				})
 			},
-			get(){
+			get(options){
 				// 1.这里引入后端请求数据
 				// var msg = userList
-				uni.request({
-					url: 'https://bdb24c6d-8c19-4f80-8e7e-c9c9f037f131.bspapp.com/video',
-					method: 'POST',
-					data:{
-						info: 'get_video'
-					},
-					success: (res) => {
-						console.log(res)
-						var msg = res.data.data
-						// 2.这里把视频添加到视频列表
-						for (let i = 0; i < msg.length; i++) {
-							this.dataList.push(msg[i])
-						}
-						// 3.播放当前视频
-						setTimeout(()=>{
-							this.dataList[this.k].isplay = false
-							this.dataList[this.k].state = 'play'
-							uni.createVideoContext(this.dataList[this.k]._id+''+this.k,this).play()
-							this.dataList[this.k].playIng = true
-						},200)
-						// start - 预加载开始
-						var p = this.k
+				this.dataList = uni.getStorageSync("dataList");
+				console.log(options.option)
+				if(Number(options.option) == 0){
+					this.dataList[0].state = "play";
+					setTimeout(()=>{
+						//这里的延迟是为了避免执行时间太快而直接跳过执行的 bug
+						uni.createVideoContext(this.dataList[0]._id+''+this.k,this).seek(0)
+						uni.createVideoContext(this.dataList[0]._id+''+this.k,this).play()
+					},300)
+					this.dataList[0].isplay = false
+					setTimeout(()=>{
+						this.dataList[0].playIng = true
+					},500)
+					var p = 0
+					setTimeout(()=>{
 						++p
+						uni.createVideoContext(this.dataList[p]._id+''+p,this).play()
 						setTimeout(()=>{
-							uni.createVideoContext(this.dataList[p]._id+''+p,this).play()
-						},20)
-						clearTimeout(this.timeout)
-						this.timeout = setTimeout(()=>{
 							uni.createVideoContext(this.dataList[p]._id+''+p,this).seek(0)
 							uni.createVideoContext(this.dataList[p]._id+''+p,this).pause()
 							console.log('预加载第' + (p + 1) + '个视频：' + this.dataList[p]._id+''+p)
-						},1500)
-						// end - 预加载结束
-					}
-				})
-			},
-			share(){
-				uni.showToast({
-					title: '分享',
-					icon: 'none'
-				})
+						},2000)
+					},50)
+				} else {
+					this.current = Number(options.option);
+					this.k = Number(options.option);
+					setTimeout(()=>{
+						this.isChange = false
+					},50)
+				}
 			},
 			toComment(index){
 				

@@ -1,6 +1,16 @@
 {
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
+		    "path" : "pages/user/user",
+		    "style": {
+		    	"app-plus":{
+		    		"titleNView":false,
+		    		"bounce":"none"
+		    	}
+		    }
+		    
+		},
+		{
 			"path": "pages/index/index",
 			"style": {
 				"app-plus":{
@@ -21,8 +31,40 @@
             
         }
         ,{
-            "path" : "pages/new_index/new_index",
+            "path" : "pages/previewVideo/previewVideo",
             "style" :                                                                                    
+            {
+                "navigationBarTitleText": "预览视频",
+                "enablePullDownRefresh": false,
+				"app-plus":{
+					"bounce":"none"
+				}
+            }
+            
+        }
+        ,{
+            "path" : "pages/previewVideo/infoVideo/infoVideo",
+            "style" :
+            {
+                "app-plus":{
+                	"titleNView":false,
+                	"bounce":"none"
+                }
+            }
+            
+        }
+        ,{
+            "path" : "pages/wxh5previewVideo/wxh5previewVideo",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "微信/H5预览视频",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/wxh5previewVideo/wxh5infoVideo/wxh5infoVideo",
+            "style" :
             {
                 "app-plus":{
                 	"titleNView":false,
