@@ -1,55 +1,211 @@
-# uniapp-仿抖音短视频模版
+# 仿抖音短视频阅读手册
 
-#### 介绍
-uniapp-仿抖音模版
-请导入HbuilderX中，按照页面说明提示即可。
+### 特殊通知
+- ##### 请用户把HbuilderX的版本暂时保持在 3.3.9及以下版本，勿升级至 3.4.7 或 3.4.6 ，已确认 3.4.7 版本和 3.4.6 版本在本项目中升级会出现未知滑动错误。等待uniapp官方修复后再做通知。
 
-#### 安装教程
-方式一
-1.  git clone https://gitee.com/ZhenYJ/fandouyin.git
-2.  引入HbuilderX中
-3.  选择对应端（App、小程序、H5）页面启动运行程序即可
+### 需求说明
+在项目中内置短视频模块
+### 功能说明
 
-方式二
-1.  复制链接打开uniapp插件市场
-2.  直接导入HbuilderX
-3.  链接：https://ext.dcloud.net.cn/plugin?id=5656
-4.  选择对应端（App、小程序、H5）页面启动运行程序即可
+- #### 1.APP端
+    - [x] 滑动视频播放
+    - [x] 视频播放与暂停
+    - [x] 滑动进度条
+    - [x] 预加载视频
+    - [x] 自适应视频封面
+    - [x] 滑动视频小窗预览
+    - [x] 无限加载视频
+    - [x] 普通点赞/取消点赞
+    - [x] 双击屏幕点赞
+    - [x] 视频结束自动切换下一个视频
+    - [x] 视频预览列表
+        - [x] 请求加载视频列表
+        - [x] 点击某视频播放某视频
+        - [x] 视频列表内
+            - [x] 滑动视频播放
+            - [x] 视频播放与暂停
+            - [x] 预加载视频
+            - [x] 自适应视频封面
+            - [x] 无限加载视频
+            - [x] 普通点赞/取消点赞
+            - [x] 侧滑返回
+    - [x] 评论
+        - [x] 评论列表
+            - [x] 一级评论「含表情+GIF动图」
+            - [x] 二级评论「含表情+GIF动图」
+            - [x] 根据视频作者显示「作者」标志
+            - [x] 展开查看回复的评论
+            - [x] 根据是否是此视频作者显示二级评论「作者」标志
+            - [x] 根据是否是此视频作者显示「删除」按钮
+            - [x] 倒序显示评论
+            - [x] 点赞/取消点赞
+            - [&nbsp;&nbsp;]  评论算法
+        - [x] 评论输入框
+            - [x] 触摸弹起
+            - [x] 点击表情展开默认emoji表情「QQ」
+            - [x] 记住历史输入emoji表情「QQ」
+            - [x] 上传自定义图片表情
+            - [x] 点击GIF表情显示在评论框之下
+            - [x] 记住历史GIF表情
+            - [x] GIF表情
+                - [x] 分页显示GIF表情
+                - [x] 搜索GIF表情
+                - [x] 点击GIF表情显示在评论框之下
+                - [x] 点击搜索GIF弹起表情输入框
+                - [x] 输入GIF值显示GIF表情，点击表情显示在评论框之下
 
-#### 使用说明
 
-#至2022年2月18日，此插件已经连续更新和维护了7个月。
+- #### 2.微信小程序、H5端
+    - [x] 滑动视频播放
+    - [x] 视频播放与暂停
+    - [x] 预加载视频
+    - [x] 自适应视频封面
+    - [x] 无限加载视频
+    - [x] 普通点赞/取消点赞
+    - [x] 双击屏幕点赞
+    - [x] 视频结束自动切换下一个视频
+    - [x] 视频预览列表
+        - [x] 请求加载视频列表
+        - [x] 点击某视频播放某视频
+        - [x] 视频列表内
+            - [x] 滑动视频播放
+            - [x] 视频播放与暂停
+            - [x] 预加载视频
+            - [x] 自适应视频封面
+            - [x] 无限加载视频
+            - [x] 普通点赞/取消点赞
+            - [x] 侧滑返回
+                
+### 注意说明
 
-#注意⚠️：所有页面都为 nvue 页面，请误引入至 vue 页面中。
+nvue使用详细参考官方文档[https://uniapp.dcloud.io/nvue-outline]
 
-[详细参考官方文档：https://uniapp.dcloud.io/nvue-outline]
+- #### 1.APP端
 
-1.插件可直接粘贴复制，不影响其他功能    
+|App端|
+| ------------- |
+|index.nvue页面适用于：安卓、iOS|
+|导入含 tabbar 页面，请在 onLoad()中修改 deleteHeigth的值。否则无法滑动|
+|demo页面都为 nvue 页面，请误引入至 vue 页面中|
+|App端请勾选VideoPlayer模块。否则视频无法播放|
 
-2.代码详解已经一步一步写在代码旁边了，优化了蛮多视频组件常见的一些问题，比如：滑着滑着卡死的、还只是稍稍滑一点点就播放下一个视频或者上一个视频、滑动太快播放串音、for循环在低端机直接卡死等等。这个版本都有纠正和改进，当然也还有，目前也是在学习阶段。欢迎大家多多指正，插件内容有所引用。有不懂的问题可以在群里提出来
+- #### 2.小程序/H5端
 
-#QQ群：953408573  
+|小程序/H5端|
+| ------------- |
+|nvueSwiper页面适用于：手机H5、小程序|
+|若出现小程序图片破裂，请修改:poster="list.src+'?x-oss-process=video/snapshot,t_100,f_jpg'"|
+|小程序、H5用户请参考视频教程|
 
-3.官方的进度条太臃肿而且无法更改，其他组件的进度条难分离，此插件精简了进度条代码，高度自定义进度条样式。
+`<<测试阶段小程序用户请按照如下配置信息>>`
+
+`1.前往小程序官网配置请求域名：https://bdb24c6d-8c19-4f80-8e7e-c9c9f037f131.bspapp.com【以免测试过程中出现测试数据无法请求的问题】`
+
+<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-bdb24c6d-8c19-4f80-8e7e-c9c9f037f131/5a365dbc-a3e3-4055-8904-72ffdae5c9ff.png" width="450px"/>
+
+`2.在开发者工具调试后，为保证性能可以启用真机预览(而非使用真机调试)，第一步配好以后才不会出现黑屏`
+
+<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-bdb24c6d-8c19-4f80-8e7e-c9c9f037f131/70fa80a7-9b25-4c5e-9e0c-8e5460d9d611.png" width="450px"/>
+<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-bdb24c6d-8c19-4f80-8e7e-c9c9f037f131/176a1173-222a-4dfb-8d4a-e6026ca607d6.png" width="450px"/>
+
+### 插件解决问题
+
+- ##### 解决App端视频列表上下滑动、视频自动滑动播放的难点
+- ##### 解决视频播放前黑屏的问题
+- ##### 解决其他短视频组件播放等待加载转圈问题。提前加载，即滑即播
+- ##### 解决视频串音问题
+- ##### 解决滑动问题
+- ##### 优化视频播放性能
+- ##### 精简进度条代码，高度自定义进度条样式
+
+### 测试情况
+
+- #### 安卓测试机型
+
+|高端机型|芯片|系统|
+|--------|----|----|
+|华为 Mate40|麒麟9000|Android 10.0|
+|红米 Note3|高通骁龙650|Android 6.0.1|
+##### `说明：高端机型得益于芯片，滑动流畅，其他如上说明。低端机型由于机器太老6年前的安卓手机，滑动太快的时候会卡住，但是过一会就会好。`
+
+- #### 苹果测试机型
+
+|高端机型|芯片|系统|
+|--------|----|----|
+|iPhone12，iPad Pro2020|A14，A12Z|iOS14.5、iPadOS 14.2|
+|iPhone6|A8|iOS 12.4|
+##### `说明：高端机型得益于芯片，滑动流畅，其他如上说明。低端机型：6年前的苹果产品还是够挺，滑动只是略微卡顿。`
+
+### 演示操作
+- #### App端演示
+<https://vkceyugu.cdn.bspapp.com/VKCEYUGU-bdb24c6d-8c19-4f80-8e7e-c9c9f037f131/2d5ffc6f-14c6-4b8b-8387-8aeaf17c26f0.mp4>
+
+<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-bdb24c6d-8c19-4f80-8e7e-c9c9f037f131/209a7b48-f9b6-4b7f-ad56-50f1da73b5cd.png" width="200px"/>
+- #### 小程序端演示
+<https://vkceyugu.cdn.bspapp.com/VKCEYUGU-bdb24c6d-8c19-4f80-8e7e-c9c9f037f131/e09259f0-d68a-4c05-8a81-36f06a9154a7.mp4>
+
+<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-bdb24c6d-8c19-4f80-8e7e-c9c9f037f131/d9cd8b60-17e4-4c0a-b79f-3624752f3da3.png" width="200px"/>
+- #### 安卓体验链接
+<https://vkceyugu.cdn.bspapp.com/VKCEYUGU-bdb24c6d-8c19-4f80-8e7e-c9c9f037f131/d01d4d28-aee0-4679-a20d-edba731e608b.apk>
+
+### 插件历程
+
+- #### 至2022年5月26日，此插件已经连续更新和维护10个月。
+- #### 对于如何提升播放性能，如何做到像抖音一样随滑随播，于是在github和gitee和DCloud插件市场和各个论坛，翻遍了播放插件和优化思路，很多插件发布以后都不会再进行长期维护，作者承诺此插件免费发布，并且长期维护，感谢大家对作者工作的支持。
+
+### 视频教程
+#### <https://www.bilibili.com/video/BV1gi4y12745>
+
+### 问题反馈
+- #### 最有效的方式就是加 QQ 群反馈，消息及时，解决速度快。
+- #### 评论区反馈格式如下：
+(如下格式才可得到有效回复)
+```
+使用端：App[iOS\Android]（小程序、H5）
+问题描述：xxxxx
+其他内容：xxxxx
+```
+（示例）
+```
+使用端：App[iOS]
+问题描述：如何处理安全区高度
+其他内容：【配图1】【配图2】
+```
+
+### 其他说明
+
+- #### 代码注释已经一步一步写在代码旁边了
+- #### 插件可直接粘贴复制，不影响其他功能
+- #### 此插件原生实现，没有基于第三方原生插件，解决提前预播的难点，视频播放性能再次得到提升。
+- #### App端插件引入了评论，这一部分仅做参考（如果需要H5、小程序请参考评论插件：https://ext.dcloud.net.cn/plugin?id=7875）
+(App端引入)（uni-popup组件已经被改造了）
+
+```javascript
+<uni-popup type="bottom" ref="pinglun" @touchmove.stop.prevent="moveHandle">
+    <view :style="'width: '+ windowWidth +'px; height: '+ (boxStyle.height/heightNum) +'px; background-color: #242424; border-top-left-radius: 10px; border-top-right-radius: 10px;'">
+        <!-- 
+         这里就是App评论组件
+         -->
+        <douyin-scrollview
+        :Width="windowWidth"
+        :Height="(boxStyle.height/1.23)"
+        :deleteIOSHeight="36"
+        :deleteAndroidHeight="15"
+        @closeScrollview="closeScrollview"
+        ></douyin-scrollview>
+    </view>
+</uni-popup>
+```
+
+### 捐赠插件的开发
+
+觉得不错的话快来支持一下作者吧
+
+<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-bdb24c6d-8c19-4f80-8e7e-c9c9f037f131/25688f24-8b39-4128-8f62-08d75d5c9f3b.jpg" width="200px"/>
+
+### QQ群：953408573
 
 
-4.安卓测试机型：  
-高端机型：华为 Mate40、芯片：麒麟9000、系统：Android 10.0  
 
-低端机型：红米 Note3、芯片：高通骁龙650、系统：Android 6.0.1  
 
-说明：高端机型得益于芯片，滑动流畅，其他如上说明。低端机型由于机器太老6年前的安卓手机，滑动太快的时候会卡住，但是过一会就会好。  
 
-5.苹果测试机型：  
-
-高端机型：iPhone12，iPad Pro2020、芯片：A14，A12Z、系统：iOS14.5、iPadOS 14.2  
-
-低端机型：iPhone6、芯片：A8、系统：iOS 12.4  
-
-说明：高端机型得益于芯片，滑动流畅，其他如上说明。低端机型：6年前的苹果产品还是够挺，滑动只是略微卡顿。  
-  
-6.演示视频链接：https://vkceyugu.cdn.bspapp.com/VKCEYUGU-0455454d-b373-4768-aa39-dc1226fc1362/ea607407-c7d0-4219-adff-bcf6337ed1e8.mp4
-
-7.安卓体验链接：https://vkceyugu.cdn.bspapp.com/VKCEYUGU-bdb24c6d-8c19-4f80-8e7e-c9c9f037f131/bfefd949-a33a-42f2-b977-0228d2d80b3f.apk
-
-##8.视频教程：https://www.bilibili.com/video/BV1gi4y12745?share_source=copy_web
