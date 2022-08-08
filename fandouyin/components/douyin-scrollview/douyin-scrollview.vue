@@ -680,134 +680,141 @@
 				})
 			},
 			sendSMS(){
-				// 1.先处理表情信息
-				var str = this.value;
-				var stri = ""
-				var nodes = ""
-				if(this.value !== ''){
-					let replacedStr = str.replace(/\[([^(\]|\[)]*)\]/g,(item, index)=>{
-						console.log("item: " + item);
-						for(let i=0;i<this.emojilist.length;i++){
-							let row = this.emojilist[i];
-							if(row.alt==item){
-								//在线表情路径，图文混排必须使用网络路径，请上传一份表情到你的服务器后再替换此路径 
-								//比如你上传服务器后，你的100.gif路径为https://www.xxx.com/emoji/100.gif 则替换onlinePath填写为https://www.xxx.com/emoji/
-								let onlinePath = 'https://static-2908110e-6da2-4899-8b44-d45c153457ad.bspapp.com/emojis/qq/'
-								let imgstr = '<img id="img" src="' + onlinePath + row.url + '" style="">';
-								// console.log("imgstr: " + imgstr);
-								return imgstr;
-							}
-						}
-					});
-					stri = '<div>'+replacedStr+'</div>';
-					nodes = parsehtml(stri);
-				} else {
-					nodes = [];
-				}
-				var msg = {};
-				// 2.处理完成之后判断
-				if(this.istohuifu){
-					// 如果是真的代表是回复消息
-					msg = {
-						userID: uni.getStorageSync("user")._id,
-						username: uni.getStorageSync("user").username,
-						headimage: uni.getStorageSync("user").headimage,
-						pinlunContent: nodes,
-						time: time.getDate(),
-						like: [],
-						imageURL: this.imageURL,
-						huifuUser: this.huifuUser,
-						gethuifuUser: this.gethuifuUser,
-						gethuifuUserID: this.gethuifuUserID,
-					}
-					this.pinlunListX[(this.pinlunListX.length-1)-this.huifuindex].sonPinlun.push(msg);
-					var pin = this.pinlunListX;
-					this.isSend = false;
-					// 3. 评论正在发送
-					uni.showLoading({
-						title: '正在发送...'
-					})
-					uni.request({
-						url: 'https://bdb24c6d-8c19-4f80-8e7e-c9c9f037f131.bspapp.com/video',
-						method: 'POST',
-						data:{
-							info: 'add_pinlun',
-							_id: this.videoID,
-							pinlun: pin
-						},
-						success: (resx) => {
-							// console.log(resx);
-							/*
-							4.评论发送成功
-							（1）把输入框清空
-							（2）GIF 图片也清理一下
-							（3）关闭输入框
-							（4）isSend用来防止 用户多次点击发送信息
-							（5）最后就是更新评论信息
-							*/ 
-							uni.hideLoading();
-							this.value = "";
-							this.imageURL = "";
-							this.$refs.openPinglun.close();
-							this.isSend = true;
-							this.getnewpinlun();
-						}
-					})
-				} else {
-					// 直接发信息
-					msg = {
-						userID: uni.getStorageSync("user")._id,
-						username: uni.getStorageSync("user").username,
-						headimage: uni.getStorageSync("user").headimage,
-						pinlunContent: nodes,
-						time: time.getDate(),
-						sonPinlun: [],
-						like: [],
-						imageURL: this.imageURL
-					}
-					// console.log(msg);
-					this.isSend = false;
-					uni.showLoading({
-						title: '正在发送...'
-					})
-					uni.request({
-						url: 'https://bdb24c6d-8c19-4f80-8e7e-c9c9f037f131.bspapp.com/video',
-						method: 'POST',
-						data:{
-							info: 'videoID_pinlun',
-							_id: this.videoID
-						},
-						success: (res) => {
-							// console.log(res);
-							var pin = res.data.data[0].pinlun;
-							pin.push(msg);
-							uni.request({
-								url: 'https://bdb24c6d-8c19-4f80-8e7e-c9c9f037f131.bspapp.com/video',
-								method: 'POST',
-								data:{
-									info: 'add_pinlun',
-									_id: this.videoID,
-									pinlun: pin
-								},
-								success: (resx) => {
-									// console.log(resx);
-									/*
-									5.评论发送成功
-									（1）把输入框清空
-									（2）GIF 图片也清理一下
-									（3）关闭输入框
-									（4）isSend用来防止 用户多次点击发送信息
-									（5）最后就是更新评论信息
-									*/ 
-									uni.hideLoading();
-									this.value = "";
-									this.imageURL = "";
-									this.$refs.openPinglun.close();
-									this.isSend = true;
-									this.getnewpinlun();
+				if(this.userID !== ''){
+					// 1.先处理表情信息
+					var str = this.value;
+					var stri = ""
+					var nodes = ""
+					if(this.value !== ''){
+						let replacedStr = str.replace(/\[([^(\]|\[)]*)\]/g,(item, index)=>{
+							console.log("item: " + item);
+							for(let i=0;i<this.emojilist.length;i++){
+								let row = this.emojilist[i];
+								if(row.alt==item){
+									//在线表情路径，图文混排必须使用网络路径，请上传一份表情到你的服务器后再替换此路径 
+									//比如你上传服务器后，你的100.gif路径为https://www.xxx.com/emoji/100.gif 则替换onlinePath填写为https://www.xxx.com/emoji/
+									let onlinePath = 'https://static-2908110e-6da2-4899-8b44-d45c153457ad.bspapp.com/emojis/qq/'
+									let imgstr = '<img id="img" src="' + onlinePath + row.url + '" style="">';
+									// console.log("imgstr: " + imgstr);
+									return imgstr;
 								}
-							})
+							}
+						});
+						stri = '<div>'+replacedStr+'</div>';
+						nodes = parsehtml(stri);
+					} else {
+						nodes = [];
+					}
+					var msg = {};
+					// 2.处理完成之后判断
+					if(this.istohuifu){
+						// 如果是真的代表是回复消息
+						msg = {
+							userID: uni.getStorageSync("user")._id,
+							username: uni.getStorageSync("user").username,
+							headimage: uni.getStorageSync("user").headimage,
+							pinlunContent: nodes,
+							time: time.getDate(),
+							like: [],
+							imageURL: this.imageURL,
+							huifuUser: this.huifuUser,
+							gethuifuUser: this.gethuifuUser,
+							gethuifuUserID: this.gethuifuUserID,
 						}
+						this.pinlunListX[(this.pinlunListX.length-1)-this.huifuindex].sonPinlun.push(msg);
+						var pin = this.pinlunListX;
+						this.isSend = false;
+						// 3. 评论正在发送
+						uni.showLoading({
+							title: '正在发送...'
+						})
+						uni.request({
+							url: 'https://bdb24c6d-8c19-4f80-8e7e-c9c9f037f131.bspapp.com/video',
+							method: 'POST',
+							data:{
+								info: 'add_pinlun',
+								_id: this.videoID,
+								pinlun: pin
+							},
+							success: (resx) => {
+								// console.log(resx);
+								/*
+								4.评论发送成功
+								（1）把输入框清空
+								（2）GIF 图片也清理一下
+								（3）关闭输入框
+								（4）isSend用来防止 用户多次点击发送信息
+								（5）最后就是更新评论信息
+								*/ 
+								uni.hideLoading();
+								this.value = "";
+								this.imageURL = "";
+								this.$refs.openPinglun.close();
+								this.isSend = true;
+								this.getnewpinlun();
+							}
+						})
+					} else {
+						// 直接发信息
+						msg = {
+							userID: uni.getStorageSync("user")._id,
+							username: uni.getStorageSync("user").username,
+							headimage: uni.getStorageSync("user").headimage,
+							pinlunContent: nodes,
+							time: time.getDate(),
+							sonPinlun: [],
+							like: [],
+							imageURL: this.imageURL
+						}
+						// console.log(msg);
+						this.isSend = false;
+						uni.showLoading({
+							title: '正在发送...'
+						})
+						uni.request({
+							url: 'https://bdb24c6d-8c19-4f80-8e7e-c9c9f037f131.bspapp.com/video',
+							method: 'POST',
+							data:{
+								info: 'videoID_pinlun',
+								_id: this.videoID
+							},
+							success: (res) => {
+								// console.log(res);
+								var pin = res.data.data[0].pinlun;
+								pin.push(msg);
+								uni.request({
+									url: 'https://bdb24c6d-8c19-4f80-8e7e-c9c9f037f131.bspapp.com/video',
+									method: 'POST',
+									data:{
+										info: 'add_pinlun',
+										_id: this.videoID,
+										pinlun: pin
+									},
+									success: (resx) => {
+										// console.log(resx);
+										/*
+										5.评论发送成功
+										（1）把输入框清空
+										（2）GIF 图片也清理一下
+										（3）关闭输入框
+										（4）isSend用来防止 用户多次点击发送信息
+										（5）最后就是更新评论信息
+										*/ 
+										uni.hideLoading();
+										this.value = "";
+										this.imageURL = "";
+										this.$refs.openPinglun.close();
+										this.isSend = true;
+										this.getnewpinlun();
+									}
+								})
+							}
+						})
+					}
+				} else {
+					uni.showModal({
+						title: '警告提示',
+						content: '在插件测试过程中保证有用户ID，否则无法显示评论用户信息，请退回《user.vue》,从《user.vue》页面进入主页!'
 					})
 				}
 			},
