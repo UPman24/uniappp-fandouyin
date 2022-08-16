@@ -1,7 +1,25 @@
-# 仿抖音短视频阅读手册
+# uniapp-仿抖音短视频模版
 
 ### 特殊通知
-- ##### 请用户认真阅读以下说明，千万不能混淆页面随意引入，如果你发现运行后页面样式排版错乱，大概率是引入错误喔。
+- ##### 1.请用户认真阅读以下说明，千万不能混淆页面随意引入，如果你发现运行后页面样式排版错乱，大概率是引入错误喔。
+
+- ##### 2.请用户将HbuilderX版本调整到3.3.9版本或3.3.9以下的版本，以规避list-cell渲染问题。
+
+#### 介绍
+uniapp-仿抖音模版
+请导入HbuilderX中，按照页面说明提示即可。
+
+#### 安装教程
+方式一
+1.  git clone https://gitee.com/ZhenYJ/fandouyin.git
+2.  引入HbuilderX中
+3.  选择对应端（App、小程序、H5）页面启动运行程序即可
+
+方式二
+1.  复制链接打开uniapp插件市场
+2.  直接导入HbuilderX
+3.  链接：https://ext.dcloud.net.cn/plugin?id=5656
+4.  选择对应端（App、小程序、H5）页面启动运行程序即可
 
 ### 需求说明
 在项目中内置短视频模块
@@ -39,7 +57,7 @@
             - [x] 根据是否是此视频作者显示「删除」按钮
             - [x] 倒序显示评论
             - [x] 点赞/取消点赞
-            - [&nbsp;&nbsp;]  评论算法
+            - [ ]  评论算法
         - [x] 评论输入框
             - [x] 触摸弹起
             - [x] 点击表情展开默认emoji表情「QQ」
@@ -88,6 +106,7 @@ nvue使用详细参考官方文档[https://uniapp.dcloud.io/nvue-outline]
 |导入含 tabbar 页面，请在 onLoad()中修改 deleteHeigth的值。否则无法滑动|
 |demo页面都为 nvue 页面，请误引入至 vue 页面中|
 |App端请勾选VideoPlayer模块。否则视频无法播放|
+|若出现每一个视频封面黑屏，请修改:poster="item.src+'?x-oss-process=video/snapshot,t_100,f_jpg'"为你使用的云服务视频截帧方法(默认使用阿里云)|
 
 - #### 2.小程序/H5端
 
@@ -141,10 +160,12 @@ nvue使用详细参考官方文档[https://uniapp.dcloud.io/nvue-outline]
 <https://vkceyugu.cdn.bspapp.com/VKCEYUGU-bdb24c6d-8c19-4f80-8e7e-c9c9f037f131/2d5ffc6f-14c6-4b8b-8387-8aeaf17c26f0.mp4>
 
 <img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-bdb24c6d-8c19-4f80-8e7e-c9c9f037f131/209a7b48-f9b6-4b7f-ad56-50f1da73b5cd.png" width="200px"/>
+
 - #### 小程序端演示
 <https://vkceyugu.cdn.bspapp.com/VKCEYUGU-bdb24c6d-8c19-4f80-8e7e-c9c9f037f131/e09259f0-d68a-4c05-8a81-36f06a9154a7.mp4>
 
 <img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-bdb24c6d-8c19-4f80-8e7e-c9c9f037f131/d9cd8b60-17e4-4c0a-b79f-3624752f3da3.png" width="200px"/>
+
 - #### 安卓体验链接
 <https://vkceyugu.cdn.bspapp.com/VKCEYUGU-bdb24c6d-8c19-4f80-8e7e-c9c9f037f131/d01d4d28-aee0-4679-a20d-edba731e608b.apk>
 
@@ -204,8 +225,3 @@ nvue使用详细参考官方文档[https://uniapp.dcloud.io/nvue-outline]
 <img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-bdb24c6d-8c19-4f80-8e7e-c9c9f037f131/25688f24-8b39-4128-8f62-08d75d5c9f3b.jpg" width="200px"/>
 
 ### QQ群：953408573
-
-
-
-
-
