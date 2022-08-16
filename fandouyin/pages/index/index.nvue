@@ -339,10 +339,12 @@
 				},1500)
 				//【2.0版本更新内容】- end
 				//【此处处理进度条卡住的问题】
-				setTimeout(()=>{
-					uni.createVideoContext(this.dataList[k]._id,this).pause()
-					uni.createVideoContext(this.dataList[k]._id,this).play()
-				},100)
+				if(uni.getSystemInfoSync().platform !== 'ios'){
+					setTimeout(()=>{
+						uni.createVideoContext(this.dataList[k]._id,this).pause()
+						uni.createVideoContext(this.dataList[k]._id,this).play()
+					},100)
+				}
 			}
 		},
 		onShow(){
