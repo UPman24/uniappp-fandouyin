@@ -32,7 +32,6 @@
 		 
 		 
 		 -->
-		<image v-if="isShowAixin" src="@/static/img/index/aixining.png" :style="'position: fixed; margin-left: '+ aixinLeft +'px; margin-top: '+ aixinTop +'px; width: 70px; height: 65px; transform: rotate('+ Rotate +'deg);'"></image>
 		<swiper :style="'width: '+ windowWidth +'px; height: '+ windowHeight +'px; background-color: #000000;'" :vertical="true" @animationfinish="animationfinish" @change="change" :current="current" :indicator-dots="false">
 			<swiper-item v-for="(list,index) in dataList">
 				<view v-if="Math.abs(k-index)<=1">
@@ -46,6 +45,7 @@
 						v-if="Math.abs(k-index)<=1"
 						 -->
 						<video
+						v-if="isShow"
 						:id="list._id+''+index"
 						:loop="true"
 						:muted="list.isplay"
@@ -74,7 +74,7 @@
 						></image>
 					</view>
 					<!-- 播放状态：pause 的时候就会暂停 -->
-					<view class="videoHover" @click="tapVideoHover(list.state,$event)" @touchstart="touchstartHover" :style="'width: '+ windowWidth +'px; height: '+ windowHeight +'px;'">
+					<view class="videoHover" @click="tapVideoHover(list.state,$event)" :style="'width: '+ windowWidth +'px; height: '+ windowHeight +'px;'">
 						<image v-if="list.state=='pause'" class="playState" src="@/static/img/index/play.png"></image>
 					</view>
 					<view class="userInfo">
@@ -128,17 +128,17 @@
 					'width': 0,
 				},
 				
-				// 双击点赞参数
-				touchNum: 0,
-				aixinLeft: 0,
-				aixinTop: 0,
-				isShowAixin: false,
-				Rotate: 0
+				videoID: "",
+				isShow: false
 			}
 		},
+		components:{
+			
+		},
 		watch:{
-			k(k,old_k){
+			async k(k,old_k){
 				console.log(k)
+				this.isShow = false
 				this.dataList[old_k].playIng = false//如果视频暂停，就加载封面
 				this.dataList[old_k].isplay = true
 				this.dataList[old_k].state = 'pause'
@@ -149,9 +149,10 @@
 				uni.createVideoContext(this.dataList[old_k]._id + '' + old_k,this).stop()//如果视频暂停，那么旧视频停止，这里的this.dataList[old_k]._id + '' + old_k，后面加 old_k 是为了每一个视频的 id 值不同，这样就可以大程度的避免串音问题
 				console.log('已经暂停 --> 第' + (old_k + 1) + '个视频～')//提示
 				this.dataList[k].state = 'play'
-				setTimeout(()=>{
+				this.isShow = true
+				await setTimeout( async ()=>{
 					uni.createVideoContext(this.dataList[k]._id+''+k,this).play()
-					setTimeout(()=>{
+					await setTimeout(()=>{
 						this.dataList[k].isplay = false
 						this.dataList[k].playIng = true
 					},50)
@@ -185,76 +186,28 @@
 			console.log('到后台');
 		},
 		methods: {
+			closeScrollview(){
+				// 点击评论里面的叉叉，就会关闭评论
+				this.$refs.pinglun.close();
+			},
 			ended(){
 				// 1.播放当前视频结束时触发，自动切换下一个视频
 				// this.current = this.k+1
 			},
-			// 双击点赞效果
-			touchstartHover(event){
-				if(this.touchNum >= 1){
-					// console.log('双击 -- X坐标：'+ event.touches[0].screenX);
-					// console.log('双击 -- Y坐标：'+ event.touches[0].screenY);
-					this.aixinLeft = event.touches[0].screenX - 50;
-					this.aixinTop =  event.touches[0].screenY - 50;
-					this.isShowAixin = true;
-					let max = 40; let min = -40;
-					this.Rotate = Math.floor(Math.random() * (max - min + 1)) + min;
-					setTimeout(()=>{
-						this.isShowAixin = false;
-					},700)
-				}
-			},
 			//点击播放&&暂停
 			tapVideoHover(state,event){
-				this.dataList[this.k].isShowimage = false
-				this.dataList[this.k].isShowProgressBarTime = false
-				this.ProgressBarOpacity = 0.5
-				this.dotWidth = 0
 				console.log('state--',state);
-				// 1.启用双击点赞 --- start
-				this.touchNum++;
-				setTimeout(()=>{
-					if(this.touchNum == 1){
-						if(state=='play'||state=='continue'){
-							this.dataList[this.k].state = 'pause';
-						}else{
-							this.dataList[this.k].state = 'continue';
-						}
-						if(this.dataList[this.k].state == 'continue'){
-							uni.createVideoContext(this.dataList[this.k]._id+''+this.k,this).play();//暂停以后继续播放
-						}
-						if(this.dataList[this.k].state == 'pause'){
-							uni.createVideoContext(this.dataList[this.k]._id+''+this.k,this).pause();//暂停以后继续播放
-						}
-					}
-					if(this.touchNum >= 2){
-						this.doubleLike();
-					}
-					this.touchNum = 0;
-				},200)
-				// --------------- ending
-				// 2. 不启用双击点赞 start
-				// if(state=='play'||state=='continue'){
-				// 	this.dataList[this.k].state = 'pause';
-				// }else{
-				// 	this.dataList[this.k].state = 'continue';
-				// }
-				// if(this.dataList[this.k].state == 'continue'){
-				// 	uni.createVideoContext(this.dataList[this.k]._id+''+this.k,this).play();//暂停以后继续播放
-				// }
-				// if(this.dataList[this.k].state == 'pause'){
-				// 	uni.createVideoContext(this.dataList[this.k]._id+''+this.k,this).pause();//暂停以后继续播放
-				// }
-				// --------------- ending
-			},
-			doubleLike(){
-				if(this.dataList[this.k].like == false){
-					this.dataList[this.k].like_n += 1;
-					this.dataList[this.k].like = true;
+				if(state=='play'||state=='continue'){
+					this.dataList[this.k].state = 'pause';
+				}else{
+					this.dataList[this.k].state = 'continue';
 				}
-				/*
-				点赞
-				*/
+				if(this.dataList[this.k].state == 'continue'){
+					uni.createVideoContext(this.dataList[this.k]._id+''+this.k,this).play();//暂停以后继续播放
+				}
+				if(this.dataList[this.k].state == 'pause'){
+					uni.createVideoContext(this.dataList[this.k]._id+''+this.k,this).pause();//暂停以后继续播放
+				}
 			},
 			change(event){
 				this.k = event.detail.current
@@ -292,7 +245,7 @@
 						info: 'get_video'
 					},
 					success: (res) => {
-						console.log(res)
+						this.isShow = false;
 						var msg = res.data.data
 						// 2.这里把视频添加到视频列表
 						for (let i = 0; i < msg.length; i++) {
@@ -300,11 +253,13 @@
 						}
 						// 3.播放当前视频
 						setTimeout(()=>{
+							this.isShow = true;
 							this.dataList[this.k].isplay = false
 							this.dataList[this.k].state = 'play'
 							uni.createVideoContext(this.dataList[this.k]._id+''+this.k,this).play()
 							this.dataList[this.k].playIng = true
 						},200)
+						this.videoID = this.dataList[this.k]._id
 						// start - 预加载开始
 						var p = this.k
 						++p
@@ -328,7 +283,27 @@
 				})
 			},
 			toComment(index){
-				
+				// 注意点击评论之后会执行这里
+				/*
+				（1）先加载缓冲
+				（2）获取当前视频 ID 信息
+				（3）🌟🌟🌟🌟重要🌟🌟🌟🌟
+					- 一定要记得看 index.vue 里面
+					 uni.setStorageSync("user",this.peopleList[i]);
+					 这个东西，用于存储当前用户信息。在 插件里面会使用到这个东西，
+					 记得写一下。
+					 
+				（4）打开评论
+				*/ 
+				uni.showToast({
+					title: '加载中...',
+					icon: 'none',
+					position: 'bottom',
+					duration: 300
+				})
+				uni.setStorageSync("videoID",this.dataList[index]._id);
+				this.videoID = this.dataList[index]._id;
+				this.$refs.pinglun.open('bottom')
 			},
 			cLike(sss){
 				this.dataList[this.k].like = !this.dataList[this.k].like
