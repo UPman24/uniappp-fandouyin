@@ -48,6 +48,7 @@
 						
 						 -->
 						 <video
+						 v-if="isShow"
 						 :id="list._id+'_'+index"
 						 :loop="true"
 						 :muted="list.isplay"
@@ -116,6 +117,7 @@
 						
 						 -->
 						<video
+						v-if="isShow"
 						:id="list._id+''+index"
 						:loop="true"
 						:muted="list.isplay"
@@ -202,11 +204,14 @@
 				autoplayText: "开启自动播放",
 				thisindex: 0,
 				isChange: true,
+				
+				isShow: false
 			}
 		},
 		watch:{
-			k(k,old_k){
+			async k(k,old_k){
 				console.log(k)
+				this.isShow = false;
 				this.dataList[old_k].playIng = false//如果视频暂停，就加载封面
 				this.dataList[old_k].isplay = true
 				this.dataList[old_k].state = 'pause'
@@ -217,9 +222,10 @@
 				// uni.createVideoContext(this.dataList[old_k]._id + '' + old_k,this).stop()//如果视频暂停，那么旧视频停止，这里的this.dataList[old_k]._id + '' + old_k，后面加 old_k 是为了每一个视频的 id 值不同，这样就可以大程度的避免串音问题
 				console.log('已经暂停 --> 第' + (old_k + 1) + '个视频～')//提示
 				this.dataList[k].state = 'play'
-				setTimeout(()=>{
+				this.isShow = true;
+				await setTimeout( async ()=>{
 					uni.createVideoContext(this.dataList[k]._id+''+k,this).play()
-					setTimeout(()=>{
+					await setTimeout(()=>{
 						this.dataList[k].isplay = false
 						this.dataList[k].playIng = true
 					},50)
@@ -319,20 +325,22 @@
 					}
 				})
 			},
-			get(options){
+			async get(options){
 				// 1.这里引入后端请求数据
 				// var msg = userList
+				this.isShow = false;
 				this.dataList = uni.getStorageSync("dataList");
 				console.log(options.option)
 				this.current = Number(options.option);
 				this.k = Number(options.option);
-				setTimeout(()=>{
+				await setTimeout(()=>{
 					this.isChange = false
 				},50)
+				this.isShow = true;
 				if(Number(options.option) == 0){
 					this.dataList[0].state = 'play'
 					uni.createVideoContext(this.dataList[0]._id+''+this.k,this).play()
-					setTimeout(()=>{
+					await setTimeout(()=>{
 						this.dataList[0].isplay = false
 						this.dataList[0].playIng = true
 					},50)
