@@ -302,14 +302,14 @@
 			douyinScrollview
 		},
 		watch:{
-			k(k,old_k){//监听 k 值的变化，可以控制视频的播放与暂停
+			async k(k,old_k){//监听 k 值的变化，可以控制视频的播放与暂停
 				console.log(k)
 				this.dataList[old_k].state = 'stop'//如果是被滑走的视频，就停止播放
 				this.dataList[old_k].playIng = false//如果视频暂停，就加载封面
 				this.dataList[old_k].isplay = true
 				uni.createVideoContext(this.dataList[old_k]._id,this).play()
 				clearTimeout(this.oldVideo)
-				this.oldVideo = setTimeout(()=>{
+				this.oldVideo = await setTimeout(()=>{
 					uni.createVideoContext(this.dataList[old_k]._id,this).seek(0)
 					uni.createVideoContext(this.dataList[old_k]._id,this).pause()
 					console.log('预留第' + (old_k + 1) + '个视频：' + this.dataList[old_k]._id)
@@ -319,28 +319,28 @@
 				uni.createVideoContext(this.dataList[k]._id,this).play();
 				console.log('已经暂停 --> 第' + (old_k + 1) + '个视频～')//提示
 				clearTimeout(this.voice)
-				this.voice = setTimeout(()=>{
+				this.voice = await setTimeout(()=>{
 					this.dataList[k].isplay = false
 				},300)
-				setTimeout(()=>{
+				await setTimeout(()=>{
 					this.dataList[k].playIng = true
 				},850)
 				//【2.0版本更新内容】- start
 				var p = k
 				++p
-				setTimeout(()=>{
+				await setTimeout( async ()=>{
 					uni.createVideoContext(this.dataList[p]._id,this).play()
+					clearTimeout(this.timeout)
+					this.timeout = await setTimeout(()=>{
+						uni.createVideoContext(this.dataList[p]._id,this).seek(0)
+						uni.createVideoContext(this.dataList[p]._id,this).pause()
+						console.log('预加载第' + (p + 1) + '个视频：' + this.dataList[p]._id)
+					},1500)
 				},20)
-				clearTimeout(this.timeout)
-				this.timeout = setTimeout(()=>{
-					uni.createVideoContext(this.dataList[p]._id,this).seek(0)
-					uni.createVideoContext(this.dataList[p]._id,this).pause()
-					console.log('预加载第' + (p + 1) + '个视频：' + this.dataList[p]._id)
-				},1500)
 				//【2.0版本更新内容】- end
 				//【此处处理进度条卡住的问题】
 				if(uni.getSystemInfoSync().platform !== 'ios'){
-					setTimeout(()=>{
+					await setTimeout(()=>{
 						uni.createVideoContext(this.dataList[k]._id,this).pause()
 						uni.createVideoContext(this.dataList[k]._id,this).play()
 					},100)
@@ -553,29 +553,29 @@
 					data:{
 						info: 'get_video'
 					},
-					success: (res) => {
+					success: async (res) => {
 						var msg = res.data.data
 						// console.log(msg)
 						this.dataList = msg
 						this.dataList[0].state = "play";
-						setTimeout(()=>{
+						await setTimeout(()=>{
 							//这里的延迟是为了避免执行时间太快而直接跳过执行的 bug
 							uni.createVideoContext(this.dataList[0]._id,this).seek(0)
 							uni.createVideoContext(this.dataList[0]._id,this).play()
 						},200)
 						this.dataList[0].isplay = false
-						setTimeout(()=>{
+						await setTimeout(()=>{
 							this.dataList[0].playIng = true
 						},500)
 						var p = 0
-						setTimeout(()=>{
+						await setTimeout( async ()=>{
 							++p
 							uni.createVideoContext(this.dataList[p]._id,this).play()
-							setTimeout(()=>{
+							await setTimeout(()=>{
 								uni.createVideoContext(this.dataList[p]._id,this).seek(0)
 								uni.createVideoContext(this.dataList[p]._id,this).pause()
 								console.log('预加载第' + (p + 1) + '个视频：' + this.dataList[p]._id)
-							},2000)
+							},800)
 						},50)
 					}
 				})
