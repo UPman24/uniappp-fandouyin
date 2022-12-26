@@ -55,7 +55,7 @@
 			<text style="padding: 10upx; padding-left: 40upx; padding-right: 40upx; border-radius: 20upx; background-color: #F8F8F8; font-size: 14px;">微信/H5端-预览视频界面</text>
 		</view>
 		<image v-if="isShowAixin" src="@/static/img/index/aixining.png" :style="'position: fixed; margin-left: '+ aixinLeft +'px; margin-top: '+ aixinTop +'px; width: 70px; height: 65px; transform: rotate('+ Rotate +'deg);'"></image>
-		<view :style="'width: '+ windowWidth +'px; height: '+ boxStyle.height +'px;'">
+		<view :style="'width: '+ windowWidth +'px; height: '+ boxStyle.height +'px;'" v-if="isShow1">
 			<!-- 
 			 1.这里的 swiper 不是用来控制视频滑动的，而是用来控制左右滑动的，如果不需要的可以改成 view
 			 
@@ -163,6 +163,25 @@
 									<image src="@/static/img/index/share-fill.png" style="width: 40px; height: 40px; position: absolute; right: 5px;"></image>
 									<text style="color: #FFFFFF; margin-top: 5px; font-size: 14px; text-align: center; font-weight: bold; margin-top: 40px;">分享</text>
 								</view>
+								<!-- 5.转轮 -->
+								<block v-if="platform == 'ios'">
+									<view v-if="item.isShowProgressBarTime == false" @click="dealVoice" style="margin-top: 17px;">
+										<view style="width: 48px; height: 48px; border-radius: 50px; position: absolute; right: 2.5px;">
+											<image :style="'width: 48px; height: 48px; border-radius: 50px; transform: rotate('+ rotates +'deg);'" src="@/static/img/index/bfq.png" mode="aspectFill"></image>
+											<image v-if="showPlay" :style="'width: 30px; height: 30px; margin-top: 9px; margin-left: 9px; position: absolute; border-radius: 50px; transform: rotate('+ rotates +'deg);'" :src="item.href" mode="aspectFill"></image>
+										</view>
+									</view>
+									<view v-if="platform == 'ios'" style="margin-top: 48px;"></view>
+								</block>
+								<block v-if="platform !== 'ios'">
+									<view v-if="item.isShowProgressBarTime == false" @click="dealVoice" style="margin-top: 15px; width: 48px; height: 48px;">
+										<text style="font-size: 0.1px; opacity: 0;">.</text>
+										<view style="width: 48px; height: 48px; border-radius: 50px; position: absolute;">
+											<image :style="'width: 48px; height: 48px; border-radius: 50px; transform: rotate('+ rotates +'deg);'" src="@/static/img/index/bfq.png" mode="aspectFill"></image>
+											<image v-if="showPlay" :style="'width: 30px; height: 30px; margin-top: 9px; margin-left: 9px; position: absolute; border-radius: 50px; transform: rotate('+ rotates +'deg);'" :src="item.href" mode="aspectFill"></image>
+										</view>
+									</view>
+								</block>
 							</view>
 							<!-- 最底下的文字部分 -->
 							<view class="content" v-if="dataList.length !== 0 && dataList[k].isShowProgressBarTime == false">
@@ -213,7 +232,7 @@
 		 
 		 
 		 -->
-		<uni-popup type="bottom" ref="pinglun" @touchmove.stop.prevent="moveHandle">
+		<uni-popup type="bottom" ref="pinglun" @touchmove.stop.prevent="moveHandle" v-if="isShow2">
 			<view :style="'width: '+ windowWidth +'px; height: '+ (boxStyle.height/heightNum) +'px; background-color: #242424; border-top-left-radius: 10px; border-top-right-radius: 10px;'">
 				<!-- 
 				 注意：
@@ -295,7 +314,15 @@
 				aixinLeft: 0,
 				aixinTop: 0,
 				isShowAixin: false,
-				Rotate: 0
+				Rotate: 0,
+				
+				isShow1: false,//控制渲染变量1
+				isShow2: false,//控制渲染变量2 ： 专门控制 uni-popup
+				
+				showPlay: false,//转轮显示控制
+				rotates: 0,//转轮旋转角度
+				rotateTime: "",//转轮递归事件控制
+				xrotats: "",
 			}
         },
 		components:{
@@ -304,6 +331,8 @@
 		watch:{
 			async k(k,old_k){//监听 k 值的变化，可以控制视频的播放与暂停
 				console.log(k)
+				// 清理定时器
+				this.clearToTime();
 				this.dataList[old_k].state = 'stop'//如果是被滑走的视频，就停止播放
 				this.dataList[old_k].playIng = false//如果视频暂停，就加载封面
 				this.dataList[old_k].isplay = true
@@ -318,6 +347,10 @@
 				// uni.createVideoContext(this.dataList[old_k]._id + '' + old_k,this).stop()//如果视频暂停，那么旧视频停止，这里的this.dataList[old_k]._id + '' + old_k，后面加 old_k 是为了每一个视频的 id 值不同，这样就可以大程度的避免串音问题
 				uni.createVideoContext(this.dataList[k]._id,this).play();
 				console.log('已经暂停 --> 第' + (old_k + 1) + '个视频～')//提示
+				this.xrotats = setTimeout(()=>{
+					this.showPlay = true;
+					this.rotateX();
+				},200)
 				clearTimeout(this.voice)
 				this.voice = await setTimeout(()=>{
 					this.dataList[k].isplay = false
@@ -326,8 +359,9 @@
 					this.dataList[k].playIng = true
 				},850)
 				//【2.0版本更新内容】- start
-				var p = k
-				++p
+				var p = k;
+				++p;
+				this.dataList[p].isplay = true
 				await setTimeout( async ()=>{
 					uni.createVideoContext(this.dataList[p]._id,this).play()
 					clearTimeout(this.timeout)
@@ -377,16 +411,51 @@
 				*/
 				this.heightNum = 1.18
 			}
-			
+			// 控制渲染 -- start
+			this.isShow1 = true;
+			setTimeout(()=>{
+				this.isShow2 = true;
+			},400)
+			// 控制渲染 -- end
 			this.windowWidth = uni.getSystemInfoSync().screenWidth//获取屏幕宽度
 			this.boxStyle.width = this.windowWidth + 'px'//给宽度加px
 			this.wHeight = uni.getSystemInfoSync().screenHeight;//获取屏幕高度
 			this.boxStyle.height = this.wHeight - this.deleteHeight;//改变视频高度
 			this.get()//这一步，加载视频数据
+			this.rotateX();
 		},
 		onReady() {
 		},
         methods: {
+			dealVoice(){
+				uni.showToast({
+					title: '处理声音',
+					icon: 'none'
+				})
+			},
+			clearToTime(){
+				//清理定时器
+				for(let i=0;i<20;i++){
+					clearTimeout(this.rotateTime);
+					clearTimeout(this.xrotats);
+					this.showPlay = false;
+					this.rotates = 0;
+				}
+			},
+			clearTime(){
+				//清理定时器
+				for(let i=0;i<20;i++){
+					clearTimeout(this.rotateTime);
+					clearTimeout(this.xrotats);
+				}
+			},
+			rotateX(){
+				// clearTimeout(this.rotateTime);
+				this.rotateTime = setTimeout(()=>{
+					this.rotateX();
+					this.rotates += 1;
+				},30)
+			},
 			autoPlay(){ 
 				this.isAutoplay = !this.isAutoplay;
 				if(!this.isAutoplay){
@@ -567,9 +636,11 @@
 						await setTimeout(()=>{
 							this.dataList[0].playIng = true
 						},500)
-						var p = 0
+						var p = 0;
+						this.showPlay = true;
 						await setTimeout( async ()=>{
-							++p
+							++p;
+							this.dataList[p].isplay = true
 							uni.createVideoContext(this.dataList[p]._id,this).play()
 							await setTimeout(()=>{
 								uni.createVideoContext(this.dataList[p]._id,this).seek(0)
@@ -624,9 +695,14 @@
 						}
 						if(this.dataList[this.k].state == 'continue'){
 							uni.createVideoContext(this.dataList[this.k]._id,this).play();//暂停以后继续播放
+							this.clearTime();
+							setTimeout(()=>{
+								this.rotateX();
+							},50)
 						}
 						if(this.dataList[this.k].state == 'pause'){
 							uni.createVideoContext(this.dataList[this.k]._id,this).pause();//暂停以后继续播放
+							this.clearTime();
 						}
 					}
 					if(this.touchNum >= 2){
@@ -767,7 +843,7 @@
 	}
 	.userInfo{
 		position: absolute;
-		bottom:110px;
+		bottom: 80px;
 		right: 10px;
 		flex-direction: column;
 		
@@ -798,10 +874,11 @@
 		color: red;
 	}
 	.content{
-	  width: 720rpx;
+	  width: 610rpx;
 	  z-index: 99;
 	  position: absolute;
 	  bottom: 30px;
+	  /* background-color: #007AFF; */
 	  /* justify-content: center; */
 	  padding: 15rpx;
 	  flex-direction: column;

@@ -2,7 +2,7 @@
 	<view style="background-color: #000000;">
 		<scroll-view :style="'width: 100%; height: '+ (windowHeight) +'px; background-color: #000000;'" :scroll-y="true" @scrolltolower="scrolltolower" :lower-threshold="lowerThreshold">
 			<view style="display: flex; flex-direction: row; flex-wrap: wrap;">
-				<block v-for="(list,index) in dataList">
+				<block v-for="(list,index) in dataList" :key="index">
 					<view style="width: 32.5%; height: 350upx; background-color: #000000; margin-top: 5upx; margin-left: 5upx;">
 						<image @click="towxh5Video(index)" :src="list.src+'?x-oss-process=video/snapshot,t_1000,f_jpg'" mode="aspectFill" style="width: 100%; height: 100%;"></image>
 					</view>

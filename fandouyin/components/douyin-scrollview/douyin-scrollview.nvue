@@ -23,7 +23,7 @@
 		<view :style="'width: '+ Width +'px; height: '+ (Height/num) +'px; margin-top: 20upx; background-color: #242424; display: flex; flex-direction: column;'">
 			<text v-if="pinlunList.length == 0" :style="'font-size: 14px; font-weight: bold; color: #a3a1a4; margin-top: 150upx; margin-left: '+ (Width/2.9) +'px; position: absolute;'">～ 快来评论吧 ～</text>
 			<list :show-scrollbar="false" :scrollable="true">
-				<cell v-for="(list,index) in pinlunList">
+				<cell v-for="(list,index) in pinlunList" :key="index">
 					<view :style="'width: '+ Width +'px; display: flex; flex-direction: row;'">
 						<!-- 1.用户的头像 -->
 						<image :src="list.headimage" mode="aspectFill" style="width: 75upx; height: 75upx; border-radius: 50upx; margin-top: 40upx; margin-left: 30upx;"></image>
@@ -45,7 +45,7 @@
 							
 							-->
 							<view v-if="list.pinlunContent.length !== 0" @click="huifu(index)" :style="'width: '+ (Width*0.78) +'px; display: flex; flex-direction: row; flex-wrap: wrap; margin-top: 14upx;'">
-								<block v-for="(lili,inde) in list.pinlunContent[0].children">
+								<block v-for="(lili,inde) in list.pinlunContent[0].children" :key="inde">
 									<text v-if="lili.name == 'text'" :style="'font-size: 15px; font-weight: bold; color: #FFFFFF; margin-left: -3upx;'">{{lili.text}}</text>
 									<image v-if="lili.name == 'img'" :src="lili.attrs.src" style="width: 42upx; height: 42upx; margin-left: 2upx; margin-right: 2upx; margin-top: -4upx;"></image>
 								</block>
@@ -66,7 +66,7 @@
 							这里 update 用于刷新视图
 							
 							-->
-							<block v-for="(li,inde) in list.sonPinlun" v-if="update">
+							<block v-for="(li,inde) in list.sonPinlun" v-if="update" :key="inde">
 								<view :style="'width: '+ (Width*0.8) +'px; display: flex; flex-direction: row;'">
 									<!-- 9.子评论 用户头像 -->
 									<image :src="li.headimage" mode="aspectFill" style="width: 45upx; height: 45upx; border-radius: 50upx; margin-top: 40upx;"></image>
@@ -100,7 +100,7 @@
 										
 										-->
 										<view v-if="li.pinlunContent.length !== 0" @click="sonhuifu(index,inde)" :style="'width: '+ (Width*0.8*0.85) +'px; display: flex; flex-direction: row; flex-wrap: wrap; margin-top: 14upx;'">
-											<block v-for="(lili,inde) in li.pinlunContent[0].children">
+											<block v-for="(lili,inde) in li.pinlunContent[0].children" :key="inde">
 												<text v-if="lili.name == 'text'" :style="'font-size: 15px; font-weight: bold; color: #FFFFFF; margin-left: -3upx;'">{{lili.text}}</text>
 												<image v-if="lili.name == 'img'" :src="lili.attrs.src" style="width: 42upx; height: 42upx; margin-left: 2upx; margin-right: 2upx; margin-top: -2upx;"></image>
 											</block>
@@ -249,7 +249,7 @@
 							<scroll-view :style="'width: '+ Width +'px; height: '+ (emojiHeight-40) +'px; background-color: #FFFFFF;'" :scroll-y="true">
 								<text v-if="nowImage.length !== 0" @click="qingkonGIF" style="font-size: 12px; margin-top: 20upx; position: absolute; right: 40upx; color: #007AFF;">清空</text>
 								<view style="display: flex; flex-direction: row; flex-wrap: wrap; margin-top: 40upx;">
-									<block v-for="(list,index) in nowImage">
+									<block v-for="(list,index) in nowImage" :key="index">
 										<image @click="clicknowImage(index)" :src="list" mode="aspectFill" style="width: 120upx; height: 120upx; margin-top: 40upx; margin-left: 55upx;"></image>
 										<image @click="deletenowImage(index)" src="@/static/douyin/zfxsc.png" style="width: 30upx; height: 30upx; position: absolute; right: 0; margin-top: 40upx;"></image>
 									</block>
@@ -267,7 +267,7 @@
 									<text @click="qingkon" style="font-size: 12px; margin-top: 20upx; position: absolute; right: 40upx; color: #007AFF;">清空</text>
 									<view style="display: flex; flex-direction: row; flex-wrap: wrap; margin-bottom: 20upx;">
 										<!-- QQ - 表情包 -->
-										<block v-for="(list,index) in nowTimeEmojiList">
+										<block v-for="(list,index) in nowTimeEmojiList" :key="index">
 											<image @click="clicknowTimeEmoji(index)" :src="'../../static/emojis/qq/'+list.url+''" style="width: 35px; height: 35px; margin-top: 30upx; margin-left: 36upx;"></image>
 										</block>
 										<!-- 新浪微博 - 表情包 -->
@@ -279,7 +279,7 @@
 								<text style="font-size: 12px; margin-top: 20upx; margin-left: 30upx;">全部表情</text>
 								<view style="display: flex; flex-direction: row; flex-wrap: wrap;">
 									<!-- QQ - 表情包 -->
-									<block v-for="(list,index) in emojilist">
+									<block v-for="(list,index) in emojilist" :key="index">
 										<image @click="clickEmoji(index)" :src="'../../static/emojis/qq/'+list.url+''" style="width: 35px; height: 35px; margin-top: 30upx; margin-left: 36upx;"></image>
 									</block>
 									<!-- 新浪微博 - 表情包 -->
@@ -331,7 +331,7 @@
 									<view v-if="platform!=='ios'" @click="addlikeImage" style="width: 120upx; height: 120upx; border-radius: 10upx; border: 1px solid #000000; margin-top: 40upx; margin-left: 55upx;">
 										<image src="@/static/douyin/jia-9.png" style="width: 50upx; height: 50upx; margin-top: 35upx; margin-left: 35upx;"></image>
 									</view>
-									<block v-for="(list,index) in likeImage">
+									<block v-for="(list,index) in likeImage" :key="index">
 										<image @click="clickLikeImage(index)" :src="list" mode="aspectFill" style="width: 120upx; height: 120upx; margin-top: 40upx; margin-left: 55upx;"></image>
 										<image @click="deleteImage(index)" src="@/static/douyin/zfxsc.png" style="width: 30upx; height: 30upx; position: absolute; right: 0; margin-top: 40upx;"></image>
 									</block>
@@ -348,7 +348,7 @@
 									<view v-if="platform!=='ios'" @click="searchGIF" style="width: 120upx; height: 120upx; border-radius: 10upx; border: 1px solid #000000; margin-top: 40upx; margin-left: 55upx;">
 										<image src="@/static/douyin/sousuo-7.png" style="width: 50upx; height: 50upx; margin-top: 35upx; margin-left: 35upx;"></image>
 									</view>
-									<block v-for="(list,index) in gifAndpnglist">
+									<block v-for="(list,index) in gifAndpnglist" :key="index">
 										<image @click="clickGIF(index)" :src="list.url" mode="aspectFill" style="width: 120upx; height: 120upx; margin-top: 40upx; margin-left: 55upx;"></image>
 									</block>
 								</view>
@@ -375,7 +375,7 @@
 				 
 				 -->
 				<scroll-view :style="'width: '+ Width +'px; height: 80px; border-bottom: 1upx solid #e3e1e5; display: flex; flex-direction: row;'" :scroll-x="true" style="display: flex; flex-direction: row;" :show-scrollbar="false">
-					<block v-for="(list,index) in GifList">
+					<block v-for="(list,index) in GifList" :key="index">
 						<image @click="selectGIF(index)" :src="list.url" mode="aspectFill" style="width: 120upx; height: 120upx; margin-top: 20upx; margin-left: 20upx;"></image>
 					</block>
 					<view style="width: 20upx; height: 120upx; margin-left: 10upx;"></view>

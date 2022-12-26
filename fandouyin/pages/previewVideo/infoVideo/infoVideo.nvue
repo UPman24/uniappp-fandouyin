@@ -372,6 +372,7 @@
 				//【2.0版本更新内容】- start
 				var p = k
 				++p
+				this.dataList[p].isplay = true
 				await setTimeout( async ()=>{
 					uni.createVideoContext(this.dataList[p]._id+''+p,this).play()
 					clearTimeout(this.timeout)
@@ -597,6 +598,7 @@
 					var p = 0
 					await setTimeout( async ()=>{
 						++p
+						this.dataList[p].isplay = true
 						uni.createVideoContext(this.dataList[p]._id+''+p,this).play()
 						await setTimeout(()=>{
 							uni.createVideoContext(this.dataList[p]._id+''+p,this).seek(0)

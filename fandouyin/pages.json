@@ -9,8 +9,8 @@
 		    	}
 		    }
 		    
-		},
-		{
+		}
+		,{
 			"path": "pages/index/index",
 			"style": {
 				"app-plus":{
@@ -19,7 +19,7 @@
 				}
 			}
 		}
-        ,{
+		,{
             "path" : "pages/nvueSwiper/nvueSwiper",
             "style" :                                                                                    
             {
