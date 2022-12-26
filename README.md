@@ -3,7 +3,7 @@
 ### 特殊通知
 - ##### 1.请用户认真阅读以下说明，千万不能混淆页面随意引入，如果你发现运行后页面样式排版错乱，大概率是引入错误喔。
 
-- ##### 2.请用户将HbuilderX版本调整到3.3.9版本或3.3.9以下的版本，以规避list-cell渲染问题。
+- ##### 2.请App端用户将HbuilderX版本调整到3.3.9版本或3.3.9以下的版本，以规避list-cell渲染问题。
 
 ### 需求说明
 在项目中内置短视频模块
@@ -91,6 +91,13 @@ nvue使用详细参考官方文档[https://uniapp.dcloud.io/nvue-outline]
 |demo页面都为 nvue 页面，请误引入至 vue 页面中|
 |App端请勾选VideoPlayer模块。否则视频无法播放|
 |若出现每一个视频封面黑屏，请修改:poster="item.src+'?x-oss-process=video/snapshot,t_100,f_jpg'"为你使用的云服务视频截帧方法(默认使用阿里云)|
+|导入项目运行正常，加入自己视频链接黑屏时，按照惯例请先新建项目运行到真机并在video加入你的链接，如果不正常说明你的视频链接本身存在问题或者视频格式不正确或不被支持，App端视频链接请保证在公网下运行|
+
+`App端遇到这个有两种情况：1.没有勾选 VideoPlayer 模块。2.导入到HbuilderX的manifest.json文件有冲突。`
+<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-bdb24c6d-8c19-4f80-8e7e-c9c9f037f131/1bbdd1d7-f65d-4584-bbc5-c810dd597e61.jpg" width="300px"/>
+
+`解决办法如下：`
+<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-bdb24c6d-8c19-4f80-8e7e-c9c9f037f131/8b6e3f9b-a525-4874-8973-c5560c2a4ea3.png" width="300px"/>
 
 - #### 2.小程序/H5端
 
@@ -141,19 +148,30 @@ nvue使用详细参考官方文档[https://uniapp.dcloud.io/nvue-outline]
 
 ### 演示操作
 - #### App端演示
-<https://vkceyugu.cdn.bspapp.com/VKCEYUGU-bdb24c6d-8c19-4f80-8e7e-c9c9f037f131/2d5ffc6f-14c6-4b8b-8387-8aeaf17c26f0.mp4>
+<https://vkceyugu.cdn.bspapp.com/VKCEYUGU-bdb24c6d-8c19-4f80-8e7e-c9c9f037f131/451958da-e1a4-4eab-9961-f9bb58e76720.mp4>
 
-<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-bdb24c6d-8c19-4f80-8e7e-c9c9f037f131/209a7b48-f9b6-4b7f-ad56-50f1da73b5cd.png" width="200px"/>
+<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-bdb24c6d-8c19-4f80-8e7e-c9c9f037f131/5c6c4a53-2cb2-4762-a8ca-16d25c71d1f6.png" width="200px"/>
+
+- #### H5演示
+[H5体验链接](http://shortvideo.flymusics.cn)
+[浏览器限制🚫：不支持拦截视频的浏览器（如：夸克等），手机建议用QQ浏览，电脑均可]
+
 - #### 小程序端演示
 <https://vkceyugu.cdn.bspapp.com/VKCEYUGU-bdb24c6d-8c19-4f80-8e7e-c9c9f037f131/e09259f0-d68a-4c05-8a81-36f06a9154a7.mp4>
 
 <img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-bdb24c6d-8c19-4f80-8e7e-c9c9f037f131/d9cd8b60-17e4-4c0a-b79f-3624752f3da3.png" width="200px"/>
-- #### 安卓体验链接
+
+- #### 安卓开源体验链接
 <https://vkceyugu.cdn.bspapp.com/VKCEYUGU-bdb24c6d-8c19-4f80-8e7e-c9c9f037f131/d01d4d28-aee0-4679-a20d-edba731e608b.apk>
+
+<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-bdb24c6d-8c19-4f80-8e7e-c9c9f037f131/5c6c4a53-2cb2-4762-a8ca-16d25c71d1f6.png" width="200px"/>
+
+- ##### 小世界体验链接
+<https://vkceyugu.cdn.bspapp.com/VKCEYUGU-bdb24c6d-8c19-4f80-8e7e-c9c9f037f131/e2393380-93f1-4879-ba1f-1fe6d188c673.apk>
 
 ### 插件历程
 
-- #### 至2022年9月1日，此插件已经连续更新和维护13个月。
+- #### 至2022年12月15日，此插件已经连续更新和维护15个月。
 - #### 对于如何提升播放性能，如何做到像抖音一样随滑随播，于是在github和gitee和DCloud插件市场和各个论坛，翻遍了播放插件和优化思路，很多插件发布以后都不会再进行长期维护，作者承诺此插件免费发布，并且长期维护，感谢大家对作者工作的支持。
 
 ### 视频教程
