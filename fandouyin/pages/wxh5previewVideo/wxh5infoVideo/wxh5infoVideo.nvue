@@ -32,9 +32,9 @@
 		 
 		 
 		 -->
-		 <view @click="autoPlay" style="position: fixed; margin-top: 100upx; right: 40upx;">
+		<!-- <view @click="autoPlay" style="position: fixed; margin-top: 100upx; right: 40upx;">
 		 	<text style="padding: 10upx; padding-left: 40upx; padding-right: 40upx; border-radius: 20upx; background-color: #F8F8F8; color: #007AFF; font-weight: bold; font-size: 14px;">{{autoplayText}}</text>
-		 </view>
+		 </view> -->
 		<swiper :style="'width: '+ windowWidth +'px; height: '+ windowHeight +'px; background-color: #000000;'" :vertical="true" @animationfinish="animationfinish" @change="change" :current="current" :indicator-dots="false">
 			<swiper-item v-for="(list,index) in dataList" :key="index">
 				<view v-if="isChange">

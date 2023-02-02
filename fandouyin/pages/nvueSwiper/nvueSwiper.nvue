@@ -96,12 +96,14 @@
 							<image src="@/static/img/index/share-fill.png" style="width: 40px; height: 40px; position: absolute; right: 5px;"></image>
 							<text style="color: #FFFFFF; margin-top: 5px; font-size: 14px; text-align: center; font-weight: bold; margin-top: 40px;">分享</text>
 						</view>
+						<!-- #ifndef MP  -->
 						<view @click="dealVoice" style="margin-top: 17px;">
 							<view style="width: 48px; height: 48px; border-radius: 50px; position: absolute; right: 2.5px;">
 								<image :style="'width: 48px; height: 48px; border-radius: 50px; transform: rotate('+ rotates +'deg);'" src="@/static/img/index/bfq.png" mode="aspectFill"></image>
 								<image v-if="showPlay" :style="'width: 30px; height: 30px; margin-top: 9px; margin-left: 9px; position: absolute; border-radius: 50px; transform: rotate('+ rotates +'deg);'" :src="list.href" mode="aspectFill"></image>
 							</view>
 						</view>
+						<!-- #endif -->
 						<view v-if="showVoice" style="margin-top: 17px; background-color: #2C405A;">
 							<image v-if="list.isplay" @click="changeVoice" style="width: 28px; height: 28px; border-radius: 50px; position: absolute; margin-top: 45px; right: 12px;" src="@/static/img/index/voiceclose.png" mode="aspectFill"></image>
 							<image v-if="!list.isplay" @click="changeVoice" style="width: 28px; height: 28px; border-radius: 50px; position: absolute; margin-top: 45px; right: 12px;" src="@/static/img/index/voiceopen.png" mode="aspectFill"></image>
@@ -156,7 +158,9 @@
 		watch:{
 			async k(k,old_k){
 				console.log(k)
+				// #ifndef MP
 				this.clearToTime();
+				// #endif
 				this.isShow = false
 				this.dataList[old_k].playIng = false//如果视频暂停，就加载封面
 				this.dataList[old_k].isplay = true
@@ -171,7 +175,9 @@
 				this.isShow = true
 				this.xrotats = setTimeout(()=>{
 					this.showPlay = true;
+					// #ifndef MP
 					this.rotateX();
+					// #endif
 				},200)
 				await setTimeout( async ()=>{
 					uni.createVideoContext(this.dataList[k]._id+''+k,this).play()
@@ -208,7 +214,9 @@
 			this.boxStyle.width = this.windowWidth + 'px'//给宽度加px
 			this.boxStyle.height = this.windowHeight - this.deleteHeight;//有 tabbar的 修改这里可以改变视频高度
 			this.get() //刚进入页面加载数据
+			// #ifndef MP
 			this.rotateX();
+			// #endif
 		},
 		onShow(){
 			console.log('回到前台');
