@@ -222,6 +222,7 @@
 				rotateTime: "",//转轮递归事件控制
 				xrotats: "",
 				
+				mpcleartime: "",
 			}
 		},
 		components:{
@@ -239,8 +240,7 @@
 				this.dataList[old_k].state = 'pause'
 				console.log('预留第' + (old_k + 1) + '个视频：' + this.dataList[old_k]._id+''+old_k)
 				// 2.0版本已经去掉了下面这一句，视频不用暂停，只需要把声音禁止就行
-				uni.createVideoContext(this.dataList[old_k]._id + '' + old_k,this).seek(0)
-				uni.createVideoContext(this.dataList[old_k]._id + '' + old_k,this).pause()//如果视频暂停，那么旧视频停止，这里的this.dataList[old_k]._id + '' + old_k，后面加 old_k 是为了每一个视频的 id 值不同，这样就可以大程度的避免串音问题
+				uni.createVideoContext(this.dataList[old_k]._id + '' + old_k,this).stop()//如果视频暂停，那么旧视频停止，这里的this.dataList[old_k]._id + '' + old_k，后面加 old_k 是为了每一个视频的 id 值不同，这样就可以大程度的避免串音问题
 				console.log('已经暂停 --> 第' + (old_k + 1) + '个视频～')//提示
 				this.dataList[k].state = 'play'
 				this.isShow = true
@@ -251,8 +251,8 @@
 					// #endif
 				},200)
 				await setTimeout( async ()=>{
+					// #ifdef H5
 					if (typeof WeixinJSBridge == "undefined") {
-						// #ifdef H5
 						this.dataList[k].isplay = true
 						audo.src = this.dataList[this.k].src
 						uni.createVideoContext(this.dataList[k]._id+''+k,this).seek(0)
@@ -263,9 +263,7 @@
 								this.dataList[k].playIng = true
 							},850)
 						},50)
-						// #endif
 					} else {
-						// #ifdef H5
 						this.dataList[k].isplay = true
 						audo.src = this.dataList[this.k].src
 						WeixinJSBridge.invoke('getNetworkType', {}, e => {
@@ -278,20 +276,16 @@
 								},850)
 							},50)
 						})
-						// #endif
 					}
+					// #endif
 					// #ifdef MP
 					// 如果是小程序端
-					uni.createVideoContext(this.dataList[k]._id+''+k,this).seek(0)
+					this.dataList[k].isplay = false
 					setTimeout(()=>{
-						uni.createVideoContext(this.dataList[k]._id+''+k,this).play()
-						this.dataList[k].isplay = false
-						setTimeout(()=>{
-							this.dataList[k].playIng = true
-						},50)
-					},50)
+						this.dataList[k].playIng = true
+					},250)
 					// #endif
-				},400)
+				},200)
 				var p = k+1;
 				console.log('预加载第' + (p + 1) + '个视频：' + this.dataList[p]._id+''+p)
 			}
@@ -394,6 +388,13 @@
 			},
 			change(event){
 				this.k = event.detail.current
+				// #ifdef MP
+				setTimeout(()=>{
+					this.$nextTick(()=>{
+						uni.createVideoContext(this.dataList[this.k]._id+''+this.k,this).play()
+					})
+				},50)
+				// #endif
 			},
 			animationfinish(event){
 				// 1.这里进行判断，如果是最后一个视频就进入 get() 方法加载视频进入列表
@@ -448,7 +449,6 @@
 							this.dataList[this.k].playIng = true
 							setTimeout(()=>{
 								// #ifdef H5
-								uni.createVideoContext(this.dataList[this.k]._id+''+this.k,this).seek(0)
 								uni.createVideoContext(this.dataList[this.k]._id+''+this.k,this).pause()
 								this.dataList[this.k].state = 'pause';
 								audo.src = this.dataList[this.k].src;
