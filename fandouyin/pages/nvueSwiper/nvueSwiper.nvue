@@ -223,6 +223,8 @@
 				xrotats: "",
 				
 				mpcleartime: "",
+				
+				isClick: false,
 			}
 		},
 		components:{
@@ -250,42 +252,47 @@
 					this.rotateX();
 					// #endif
 				},200)
-				await setTimeout( async ()=>{
-					// #ifdef H5
-					if (typeof WeixinJSBridge == "undefined") {
-						this.dataList[k].isplay = true
-						audo.src = this.dataList[this.k].src
-						uni.createVideoContext(this.dataList[k]._id+''+k,this).seek(0)
-						setTimeout(()=>{
-							uni.createVideoContext(this.dataList[k]._id+''+k,this).play()
-							audo.play()
+				// #ifdef MP
+				// 如果是小程序端
+				this.dataList[k].isplay = false
+				setTimeout(()=>{
+					this.dataList[k].playIng = true
+				},250)
+				// #endif
+				// #ifdef H5
+				this.dataList[k].isplay = true
+				audo.src = this.dataList[k].src
+				if(this.isClick){
+					setTimeout(()=>{
+						if (typeof WeixinJSBridge == "undefined") {
 							setTimeout(()=>{
-								this.dataList[k].playIng = true
-							},850)
-						},50)
-					} else {
-						this.dataList[k].isplay = true
-						audo.src = this.dataList[this.k].src
-						WeixinJSBridge.invoke('getNetworkType', {}, e => {
-							uni.createVideoContext(this.dataList[k]._id+''+k,this).seek(0)
-							setTimeout(()=>{
-								uni.createVideoContext(this.dataList[k]._id+''+k,this).play()
 								audo.play()
+								uni.createVideoContext(this.dataList[k]._id+''+k,this).seek(0)
+								uni.createVideoContext(this.dataList[k]._id+''+k,this).play()
 								setTimeout(()=>{
 									this.dataList[k].playIng = true
-								},850)
-							},50)
-						})
-					}
-					// #endif
-					// #ifdef MP
-					// 如果是小程序端
-					this.dataList[k].isplay = false
-					setTimeout(()=>{
-						this.dataList[k].playIng = true
-					},250)
-					// #endif
-				},200)
+								},650)
+							},500)
+						} else {
+							WeixinJSBridge.invoke('getNetworkType', {}, e => {
+								setTimeout(()=>{
+									audo.play()
+									uni.createVideoContext(this.dataList[k]._id+''+k,this).seek(0)
+									uni.createVideoContext(this.dataList[k]._id+''+k,this).play()
+									setTimeout(()=>{
+										this.dataList[k].playIng = true
+									},850)
+								},200)
+							})
+						}
+					},200)
+				} else {
+					audo.pause()
+					this.dataList[k].state = 'pause'
+					uni.createVideoContext(this.dataList[k]._id+''+k,this).seek(0)
+					uni.createVideoContext(this.dataList[k]._id+''+k,this).pause()
+				}
+				// #endif
 				var p = k+1;
 				console.log('预加载第' + (p + 1) + '个视频：' + this.dataList[p]._id+''+p)
 			}
@@ -309,15 +316,31 @@
 		onShow(){
 			console.log('回到前台');
 			if(this.dataList.length !== 0){
+				// #ifdef MP
 				this.dataList[this.k].state = 'play';
 				uni.createVideoContext(this.dataList[this.k]._id+''+this.k,this).play()
-				audo.play()
+				// #endif
+				// #ifdef H5
+				if(this.isClick){
+					this.dataList[this.k].state = 'play';
+					uni.createVideoContext(this.dataList[this.k]._id+''+this.k,this).play()
+					audo.play()
+				}
+				// #endif
 			}
 		},
 		onHide(){
-			this.dataList[this.k].state = 'pause';//界面隐藏也要停止播放视频
-			uni.createVideoContext(this.dataList[this.k]._id+''+this.k,this).pause();//暂停以后继续播放
-			audo.pause()
+			// #ifdef MP
+			this.dataList[this.k].state = 'pause';
+			uni.createVideoContext(this.dataList[this.k]._id+''+this.k,this).pause()
+			// #endif
+			// #ifdef H5
+			if(this.isClick){
+				this.dataList[this.k].state = 'pause';
+				uni.createVideoContext(this.dataList[this.k]._id+''+this.k,this).pause()
+				audo.pause()
+			}
+			// #endif
 			console.log('到后台');
 		},
 		methods: {
@@ -368,6 +391,8 @@
 					this.dataList[this.k].state = 'continue';
 				}
 				if(this.dataList[this.k].state == 'continue'){
+					this.isClick = true;
+					this.dataList[this.k].playIng = true
 					uni.createVideoContext(this.dataList[this.k]._id+''+this.k,this).play();//暂停以后继续播放
 					// #ifdef MP
 					this.dataList[this.k].isplay = false
@@ -449,6 +474,7 @@
 							this.dataList[this.k].playIng = true
 							setTimeout(()=>{
 								// #ifdef H5
+								uni.createVideoContext(this.dataList[this.k]._id+''+this.k,this).seek(0)
 								uni.createVideoContext(this.dataList[this.k]._id+''+this.k,this).pause()
 								this.dataList[this.k].state = 'pause';
 								audo.src = this.dataList[this.k].src;

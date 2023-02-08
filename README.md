@@ -3,7 +3,7 @@
 ### 特殊通知
 - ##### 1.请用户认真阅读以下说明，千万不能混淆页面随意引入，如果你发现运行后页面样式排版错乱，大概率是引入错误喔。
 
-- ##### 2.请App端用户将HbuilderX版本调整到3.3.9版本或3.3.9以下的版本，以规避list-cell渲染问题。
+- ##### 2.请App端用户将HbuilderX版本调整到3.6.18版本，以规避list-cell渲染问题。
 
 ### 需求说明
 在项目中内置短视频模块
@@ -162,12 +162,12 @@ nvue使用详细参考官方文档[https://uniapp.dcloud.io/nvue-outline]
 <img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-bdb24c6d-8c19-4f80-8e7e-c9c9f037f131/d9cd8b60-17e4-4c0a-b79f-3624752f3da3.png" width="200px"/>
 
 - #### 安卓开源体验链接
-<https://vkceyugu.cdn.bspapp.com/VKCEYUGU-bdb24c6d-8c19-4f80-8e7e-c9c9f037f131/d01d4d28-aee0-4679-a20d-edba731e608b.apk>
+<https://bmdlife-1304060577.cos.ap-beijing.myqcloud.com/app/openShortVideo/app/open-app/2023-2-8-1.apk>
 
-<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-bdb24c6d-8c19-4f80-8e7e-c9c9f037f131/5c6c4a53-2cb2-4762-a8ca-16d25c71d1f6.png" width="200px"/>
+<img src="https://bmdlife-1304060577.cos.ap-beijing.myqcloud.com/app/openShortVideo/app/open-app/2023-2-8-1.png" width="200px"/>
 
 - ##### 小世界体验链接
-<https://vkceyugu.cdn.bspapp.com/VKCEYUGU-bdb24c6d-8c19-4f80-8e7e-c9c9f037f131/e2393380-93f1-4879-ba1f-1fe6d188c673.apk>
+<https://bmdlife-1304060577.cos.ap-beijing.myqcloud.com/app/openShortVideo/app/smallworld-app/2023-2-7-2.apk>
 
 ### 插件历程
 
