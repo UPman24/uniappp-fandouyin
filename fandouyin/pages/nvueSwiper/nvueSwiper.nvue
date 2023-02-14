@@ -33,7 +33,7 @@
 		 
 		 -->
 		<!-- #ifdef MP -->
-		<swiper :style="'width: '+ windowWidth +'px; height: '+ windowHeight +'px; background-color: #000000;'" :vertical="true" @animationfinish="animationfinish" @change="change" :current="current" :indicator-dots="false">
+		<swiper :style="'width: '+ windowWidth +'px; height: '+ windowHeight +'px; background-color: #000000;'" :vertical="true" @animationfinish="animationfinish" @change="change" :current="current" :indicator-dots="false" @touchstart="mpTouchstart" @touchend="mpTouchend">
 			<swiper-item v-for="(list,index) in dataList" :key="index">
 				<view v-if="Math.abs(k-index)<=1">
 					<view>
@@ -225,6 +225,10 @@
 				mpcleartime: "",
 				
 				isClick: false,
+				
+				changeTimeout: "",
+				mptime: 0,
+				mpstartTime: 0
 			}
 		},
 		components:{
@@ -254,10 +258,18 @@
 				},200)
 				// #ifdef MP
 				// 如果是小程序端
+				clearTimeout(this.changeTimeout);
 				this.dataList[k].isplay = false
 				setTimeout(()=>{
 					this.dataList[k].playIng = true
 				},250)
+				if(this.mptime < 0.2){
+					this.changeTimeout = setTimeout(()=>{
+						uni.createVideoContext(this.dataList[this.k]._id+''+this.k,this).play()
+					},1400)
+				} else {
+					uni.createVideoContext(this.dataList[this.k]._id+''+this.k,this).play()
+				}
 				// #endif
 				// #ifdef H5
 				this.dataList[k].isplay = true
@@ -344,6 +356,12 @@
 			console.log('到后台');
 		},
 		methods: {
+			mpTouchend(){
+				this.mptime = (new Date()/1000) - this.mpstartTime;
+			},
+			mpTouchstart(){
+				this.mpstartTime = (new Date()/1000);
+			},
 			dealVoice(){
 				uni.showToast({
 					title: '处理声音',
@@ -413,13 +431,6 @@
 			},
 			change(event){
 				this.k = event.detail.current
-				// #ifdef MP
-				setTimeout(()=>{
-					this.$nextTick(()=>{
-						uni.createVideoContext(this.dataList[this.k]._id+''+this.k,this).play()
-					})
-				},50)
-				// #endif
 			},
 			animationfinish(event){
 				// 1.这里进行判断，如果是最后一个视频就进入 get() 方法加载视频进入列表
